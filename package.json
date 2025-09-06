@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Bitespeed Identity Reconciliation Service - Node.js/TypeScript API for contact deduplication and linking",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
