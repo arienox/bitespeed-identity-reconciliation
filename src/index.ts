@@ -19,6 +19,64 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Bitespeed Identity Reconciliation Service is running' });
 });
 
+// Test endpoint with sample data
+app.get('/test', async (req, res) => {
+  try {
+    // Create some test contacts to demonstrate the service
+    const testContacts = [
+      {
+        email: 'test1@example.com',
+        phoneNumber: '1234567890'
+      },
+      {
+        email: 'test2@example.com', 
+        phoneNumber: '1234567890' // Same phone, different email
+      },
+      {
+        email: 'test1@example.com',
+        phoneNumber: '0987654321' // Same email, different phone
+      }
+    ];
+
+    const results = [];
+    
+    for (const contact of testContacts) {
+      const result = await identityService.identify(contact);
+      results.push({
+        input: contact,
+        output: result
+      });
+    }
+
+    res.json({
+      message: 'Test endpoint - Identity Reconciliation Demo',
+      timestamp: new Date().toISOString(),
+      testResults: results,
+      endpoints: {
+        health: '/health',
+        identify: 'POST /identify',
+        test: '/test'
+      },
+      exampleUsage: {
+        identify: {
+          method: 'POST',
+          url: '/identify',
+          body: {
+            email: 'user@example.com',
+            phoneNumber: '1234567890'
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Test endpoint error:', error);
+    res.status(500).json({
+      error: 'Test failed',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 // Main identify endpoint
 app.post('/identify', async (req, res) => {
   try {
@@ -95,6 +153,7 @@ app.use((req, res) => {
 app.listen(port, () => {
   console.log(`🚀 Bitespeed Identity Reconciliation Service running on port ${port}`);
   console.log(`📊 Health check: http://localhost:${port}/health`);
+  console.log(`🧪 Test endpoint: http://localhost:${port}/test`);
   console.log(`🔍 Identify endpoint: http://localhost:${port}/identify`);
 });
 
